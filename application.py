@@ -1,41 +1,47 @@
 import json
+import os
 from difflib import get_close_matches
-
-data = json.load(open("data.json"))
  
-def translate(myInput):  
-    myInput = myInput.lower()
+ 
+data= json.load(open("data.json"))
+ 
+def def_finder(word):
+    if word in data:
+        return data[word]
+ 
+    elif word.lower() in data:
+        return data[word.lower()]
+ 
+    elif word.upper() in data:
+        return data[word.upper()]
+ 
+    elif word.title() in data:
+        return data[word.title()]
     
-    if myInput in data:
-        return data[myInput]
-
-    elif myInput.title() in data:
-        return data[myInput.title()]
-
-    elif myInput.upper() in data: #in case user enters words like USA or NATO
-        return data[myInput.upper()]
-
-    elif len(get_close_matches(myInput, data.keys())) > 0:
-        myOpenion = input(f"Did you mean {get_close_matches(myInput, data.keys())[0]} instead? Enter Y if yes, or N if no: ")
-        
-        if myOpenion == "Y":
-            return data[get_close_matches(myInput, data.keys())[0]]
-        
-        elif myOpenion == "N":
-            return "The word doesn't exist. Please double check it."
-        
-        else:
-            return "We didn't understand your entry."
+    elif word not in data:
+         matches= get_close_matches(word,possibilities=data.keys(), cutoff= 0.8)
+         if len(matches)>0:
+             yn= input(f"Did you mean '{matches[0]}' instead of '{word}', press 'y' if yes and 'n' if not: ")
+             if yn== "y" or yn== "Y":
+                 return data[matches[0]]
+             else:
+                 return (f"The word '{word}' doesn't exist. Please re-check!") 
     
-    else:
-        return "The word doesn't exist. Please double check it."
+         else:
+             return (f"The word '{word}' doesn't exist. Please re-check!")
 
-
-word = input("Enter word: ")
-output = translate(word)
-
-if type(output) == list:
-    for item in output:
-        print(item)
+ 
+input_word = input("Enter a word to find the definition: ")
+ 
+definitions= def_finder(input_word)
+ 
+ 
+if type(definitions)== list and len(definitions)>1:
+    for i,val in enumerate(definitions, start=1):
+         print(f"Definition {i}: { val}")
+ 
+elif type(definitions)== list and len(definitions)== 1:
+    print("Definition: "+definitions[0])
+ 
 else:
-    print(output)
+    print(definitions)
