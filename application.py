@@ -41,7 +41,7 @@ if type(definitions)== list and len(definitions)>1:
          print(f"Definition {i}: { val}")
  
 elif type(definitions)== list and len(definitions)== 1:
-    print("Definition: "+definitions[0])
+    print("Definition: " + definitions[0])
  
 else:
     print(definitions)
